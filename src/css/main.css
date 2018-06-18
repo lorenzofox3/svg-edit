@@ -1,0 +1,59 @@
+@import './common.css';
+@import './tool-panel.css';
+@import './canvas.css';
+
+:root {
+    --background-color: #323232;
+    --color: white;
+}
+
+body {
+    align-items: stretch;
+    background: var(--background-color);
+    box-sizing: border-box;
+    color: var(--color);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: stretch;
+    margin: 0;
+    width: 100vw;
+}
+
+body * {
+    box-sizing: inherit;
+}
+
+h1, h2, h3, h4 {
+    margin: 0;
+}
+
+h3:not(:first-child) {
+    margin-top: 0.5em;
+}
+
+input {
+    background: #535353;
+    border: 1px solid #191919;
+    color: white;
+    outline: none;
+    padding: 0.3em;
+    text-align: right;
+}
+
+input:focus {
+    background: orange;
+    border-color: orangered;
+}
+
+label > span:first-child {
+    font-size: 90%;
+    padding: 0 0.3em;
+}
+
+#main {
+    display: grid;
+    flex-grow: 1;
+    grid-template-columns: fit-content(25%) 1fr fit-content(25%);
+    grid-template-rows: repeat(2, 1fr);
+}

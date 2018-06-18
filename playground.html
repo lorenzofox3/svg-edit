@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SVG Editor</title>
+  <!--<link href="./css/main.css" rel="stylesheet" type="text/css"/>-->
+  <!--<script src="./js/bundle/index.js" async="true"></script>-->
+</head>
+<body>
+<main draggable="true" style="height: 100vh; width: 100vh" id="main">
+</main>
+<script>
+
+  const eventList = [
+    'click',
+    'dblclick',
+    'mousedown',
+    'mouseenter',
+    'mouseleave',
+    'mousemove',
+    'mouseout',
+    'mouseover',
+    'mouseup',
+    'wheel',
+    'dragstart',
+    'drag',
+    'dragend'
+  ];
+
+  const main = document.getElementById('main');
+
+  for (const ev of eventList) {
+    main.addEventListener(ev, () => {
+      console.log(ev);
+    });
+  }
+
+
+</script>
+</body>
+</html>

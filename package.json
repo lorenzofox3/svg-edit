@@ -1,0 +1,32 @@
+{
+  "name": "svg-editor",
+  "version": "1.0.0",
+  "description": "online svg editor",
+  "main": "index.js",
+  "scripts": {
+    "test": "build",
+    "build:clean": "rm -rf ./dist && mkdir -p ./dist/js/bundle && cp -r ./src ./dist/src && cp ./src/index.html ./dist/index.html",
+    "build:compile": "tsc",
+    "build:bundle": "rollup -c ./rollup/rollup.dev.js",
+    "build:theme": "cp -r ./src/css ./dist",
+    "build": "npm run build:clean && npm run build:compile && npm run build:bundle && npm run build:theme"
+  },
+  "keywords": [
+    "svg",
+    "editor",
+    "online",
+    "tool",
+    "logo",
+    "icons"
+  ],
+  "author": "Laurent RENARD",
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^0.60.0",
+    "rollup-plugin-commonjs": "^9.1.3",
+    "rollup-plugin-node-resolve": "^3.3.0",
+    "smart-table-events": "^1.0.4",
+    "typescript": "^2.9.1"
+  },
+  "dependencies": {}
+}
