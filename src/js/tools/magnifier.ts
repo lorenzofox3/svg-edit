@@ -1,5 +1,5 @@
 import {ClickTool} from './interfaces';
-import {Coords} from "../shapes";
+import {Coords} from '../geometry';
 
 export const magnifier = ({canvas}): ClickTool => {
     return {
@@ -9,6 +9,5 @@ export const magnifier = ({canvas}): ClickTool => {
         alternateActionClick(point: Coords, event: MouseEvent) {
             canvas.zoomOut(point);
         }
-
     };
 };

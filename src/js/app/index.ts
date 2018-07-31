@@ -1,21 +1,28 @@
-// import {store as workspaceStoreFactory} from '../workspace';
-import {canvas as canvasFactory, events} from '../canvas';
+import {canvas as canvasFactory} from '../canvas';
 import {toolBox as toolBoxFactory} from '../tools';
-// import {canvasToolPanel} from '../workspace/panel-component';
-// import {canvasToolComponent, previewComponent, canvasComponent} from '../canvas';
-import {svg} from '../svg';
-import {vector} from "../shapes/vector";
+import {root as svg, SVG_NS} from '../svg';
+import {guideLayer as guideLayerFactory} from '../guides';
 
-const canvasToolElement = document.getElementById('canvas-tool-panel');
+const root = svg({width: 640, height: 640});
+
 const body = document.querySelector('body');
+const canvasContainer = document.getElementById('canvas-container');
+const physicalCanvas = document.getElementById('canvas');
+const svgDocument = document.createElementNS(SVG_NS, 'svg');
+svgDocument.setAttribute('viewBox', `0 0 ${root.width()} ${root.height()}`);
+const guideLayer = document.createElementNS(SVG_NS, 'g');
+svgDocument.id = 'document';
+guideLayer.id = 'guide-layer';
+const renderLayer = document.createElementNS(SVG_NS, 'g');
+renderLayer.id = 'render-layer';
+svgDocument.appendChild(renderLayer);
+svgDocument.appendChild(guideLayer);
+physicalCanvas.appendChild(svgDocument);
 
 //services
-const root = svg({width: 640, height: 640});
-const canvasContainer = document.getElementById('canvas-container');
-
-// const workspace = workspaceStoreFactory();
 const canvas = canvasFactory({root, el: canvasContainer});
-const toolBox = toolBoxFactory({canvas});
+const canvasGuide = guideLayerFactory({el: canvasContainer});
+const toolBox = toolBoxFactory({canvas, document: root, canvasGuide});
 
 body.addEventListener('keypress', ev => {
     const {metaKey, key} = ev;
@@ -31,41 +38,6 @@ body.addEventListener('keypress', ev => {
     }
 });
 
-// canvas.on(events.MOUSE_MOVE, point => console.log(`x: ${point.x}, y: ${point.y}`));
-
-setTimeout(() => canvas.zoom(0.7), 1000);
-
-// setTimeout(() => canvas.pane(vector(-320, -320)), 2000);
-
-//tools & components
-// const canvasTool = canvasToolPanel({
-//     el: canvasToolElement,
-//     open: true,
-//     workspace
-// });
-// const canvasTool_c = canvasToolComponent({
-//     el: document.getElementById('canvas-tools-content'),
-//     canvas
-// });
-// const canvas_c = canvasComponent({el: document.getElementById('canvas'), canvasStore: canvas});
-// const preview_c = previewComponent({el: document.getElementById('preview-frame'), canvasStore: canvas});
-//
-// //link
-// workspace.addPanel(canvasTool);
-// workspace.openPanel(canvasTool);
-//
-//
-// canvas.on('MOUSE_MOVE', ev => {
-//     console.log(ev);
-// });
-//
-// //boot
-// setTimeout(() => canvas.setViewPort({width: 640, height: 640}), 1000);
-//
-// body.addEventListener('keypress', ev => {
-//     const {metaKey, key} = ev;
-//     if (metaKey === true && key === '1') {
-//         canvasTool.toggle();
-//         ev.preventDefault();
-//     }
-// });
+setTimeout(() => {
+    canvas.zoom(0.7)
+}, 1000);

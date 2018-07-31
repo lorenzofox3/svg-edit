@@ -1,5 +1,5 @@
 import {DragTool} from './interfaces';
-import {Coords, vector, Vector} from '../shapes';
+import {Coords, vector, Vector} from '../geometry';
 
 export const hand = ({canvas}): DragTool => {
 
@@ -13,9 +13,9 @@ export const hand = ({canvas}): DragTool => {
         actionDrag(point: Coords, event) {
             if (lastPosition.distance(vector(point)) > 2) {
                 const newPosition = vector(point);
-                const vect = newPosition.substract(lastPosition);
+                const vect = lastPosition.substract(newPosition);
                 lastPosition = newPosition;
-                canvas.pane(vect.multiply(0.7)); // Avoid acceleration
+                canvas.pane(vect.multiply(0.7)); // Avoid acceleration due to the movement of the origin : todo correct equations when reference changes
             }
         },
         actionDragEnd(point: Coords, event) {
@@ -24,6 +24,3 @@ export const hand = ({canvas}): DragTool => {
         }
     };
 };
-
-
-// 0478007778

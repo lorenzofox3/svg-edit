@@ -1,7 +1,7 @@
 import {emitter, Emitter} from '../events';
 import {events} from './events';
-import {Coords, Vector} from "../shapes";
-import {vector} from "../shapes/vector";
+import {Coords, Vector, vector} from '../geometry';
+import {render} from '../svg';
 
 export interface ViewPort {
     width: number;
@@ -18,6 +18,8 @@ export interface Canvas {
     fitContent(): Canvas;
 
     pane(dir: Vector): Canvas;
+
+    render(): void;
 }
 
 const padding = 20;
@@ -26,9 +28,8 @@ const svgBorder = 1;
 
 export const canvas = ({root, el}): Canvas & Emitter => {
     const physicalCanvas = el.querySelector('#canvas');
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-
-    physicalCanvas.appendChild(svg);
+    const svg = el.querySelector('#document');
+    const renderLayer = el.querySelector('#render-layer');
 
     const viewBox = {
         xmin: 0,
@@ -73,13 +74,14 @@ export const canvas = ({root, el}): Canvas & Emitter => {
             viewBox.xmin = cornerTopLeft.x;
             viewBox.ymin = cornerTopLeft.y;
 
-            svg.style.setProperty('width', root.width() * pixelByUnit + 'px');
-            svg.style.setProperty('height', root.height() * pixelByUnit + 'px');
+            requestAnimationFrame(() => {
+                svg.style.setProperty('width', root.width() * pixelByUnit + 'px');
+                svg.style.setProperty('height', root.height() * pixelByUnit + 'px');
+                physicalCanvas.style.setProperty('width', viewBox.width * pixelByUnit + 'px');
+                physicalCanvas.style.setProperty('height', viewBox.height * pixelByUnit + 'px');
+                svg.style.setProperty('transform', `translateX(${-1 * viewBox.xmin * pixelByUnit}px) translateY(${ -1 * viewBox.ymin * pixelByUnit}px)`);
+            });
 
-            physicalCanvas.style.setProperty('width', viewBox.width * pixelByUnit + 'px');
-            physicalCanvas.style.setProperty('height', viewBox.height * pixelByUnit + 'px');
-
-            svg.style.setProperty('transform', `translateX(${-1 * viewBox.xmin * pixelByUnit}px) translateY(${ -1 * viewBox.ymin * pixelByUnit}px)`);
             this.dispatch(events.VIEW_BOX_CHANGE, Object.assign({}, viewBox));
 
             return this;
@@ -105,6 +107,13 @@ export const canvas = ({root, el}): Canvas & Emitter => {
             const zoomRatio = Math.min((physicalWidth - svgBorder * 2) / root.width(), (physicalHeight - svgBorder * 2) / root.height());
             const canvasCenter = {x: root.width() / 2, y: root.height() / 2};
             return this.zoom(zoomRatio, canvasCenter);
+        },
+
+        render() {
+            const range = document.createRange();
+            range.selectNodeContents(renderLayer);
+            range.deleteContents();
+            render(renderLayer, root.children[0]); // todo ugly
         }
     });
 
@@ -130,7 +139,6 @@ export const canvas = ({root, el}): Canvas & Emitter => {
             instance.dispatch(events.MOUSE_MOVE, coords, ev);
         }
     });
-
 
     return instance;
 };

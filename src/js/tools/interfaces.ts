@@ -1,7 +1,6 @@
-import {Coords} from '../shapes';
+import {Coords} from '../geometry';
 
 export interface Tool {
-
 }
 
 export interface ClickTool extends Tool {

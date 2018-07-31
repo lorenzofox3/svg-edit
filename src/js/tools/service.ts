@@ -1,7 +1,9 @@
 import {magnifier} from './magnifier';
 import {hand} from './hand';
+import {rectangleTool} from './rectangle';
+import {ellipseTool} from './ellipse';
 import {events} from '../canvas';
-import {Coords} from '../shapes';
+import {Coords} from '../geometry';
 import {ClickTool, DragTool, Tool} from "./interfaces";
 
 interface ToolBox {
@@ -16,9 +18,14 @@ function isDragTool(arg: any): arg is DragTool {
     return typeof arg.actionDrag === 'function';
 }
 
-export const toolBox = ({canvas}): ToolBox => {
-    const tools: Tool[] = [magnifier({canvas}), hand({canvas})];
-    let selectedTool = tools[1];
+export const toolBox = ({canvas, canvasGuide, document}): ToolBox => {
+    const tools: Tool[] = [
+        magnifier({canvas}),
+        hand({canvas}),
+        rectangleTool({canvasGuide, canvas, document}),
+        ellipseTool({canvasGuide, canvas, document})
+    ];
+    let selectedTool = tools[3];
 
     canvas.on(events.MOUSE_CLICK, (p: Coords, event: MouseEvent) => {
         const {altKey} = event;
