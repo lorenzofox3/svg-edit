@@ -1,14 +1,20 @@
-import {DragTool} from './interfaces';
+import {DragTool, ToolType} from './interfaces';
 import {Coords, Vector, vector} from '../geometry';
-import {RectangleGuide} from '../guides';
-import {rectangle} from '../svg';
+import {GuideLayer, RectangleGuide} from '../guides';
+import {Root, TagName} from '../svg-document';
 
-export const rectangleTool = ({canvasGuide, document, canvas}): DragTool => {
+type RectangleToolDependencies = {
+    canvasGuide: GuideLayer;
+    document: Root
+}
+
+export const rectangleTool = ({canvasGuide, document}: RectangleToolDependencies): DragTool => {
 
     let origin: Vector | null = null;
     let guide: RectangleGuide | null = null;
 
     return {
+        toolType: ToolType.RECTANGLE,
         actionDragStart(point: Coords, event) {
             guide = canvasGuide.getRectangleGuide(point.x, point.y);
             origin = vector(point);
@@ -21,13 +27,12 @@ export const rectangleTool = ({canvasGuide, document, canvas}): DragTool => {
         actionDragEnd(point: Coords, event) {
             const diag = vector(point).substract(origin);
             guide.release();
-            document.appendChild(rectangle({
+            document.append(TagName.RECTANGLE, {
                 x: origin.x,
                 y: origin.y,
                 width: diag.x,
                 height: diag.y
-            }));
-            canvas.render();
+            });
             origin = null;
         }
     };

@@ -13,6 +13,7 @@
 #canvas {
     background: white;
     overflow: hidden;
+    position: relative;
 }
 
 svg#document {
@@ -20,7 +21,17 @@ svg#document {
     overflow: visible;
 }
 
-svg#guide-layer {
+svg#document {
+    fill: none;
+    stroke: red;
+}
+
+svg#guide {
     position: absolute;
     z-index: 99;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    fill: none;
+    stroke: blue;
 }

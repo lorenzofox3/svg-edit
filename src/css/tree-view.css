@@ -1,0 +1,51 @@
+#document-tree-view {
+    background: var(--background-color);
+    position: absolute;
+    display: inline-block;
+    z-index: 999;
+    width: 200px;
+    left: 5em;
+    top: 5em;
+
+}
+
+#document-tree-view ul {
+    list-style: none;
+    padding: 0;
+}
+
+#layers-container button {
+    background: inherit;
+    border: 1px solid currentColor;
+    color: white;
+    display: inline-block;
+    height: 2em;
+    margin: 0.2em;
+    width: 2em;
+}
+
+#layers-container .name {
+    padding-left: 0.2em;
+}
+
+#layers-container [data-depth] {
+    --depth: 0;
+    padding-left: calc(var(--depth) * 1.4em);
+}
+
+#layers-container li {
+    background: rgba(80, 80, 80, 0.2);
+}
+
+#layers-container [role=checkbox] {
+    box-shadow: 0 0 4px black inset;
+    border: 0;
+    color: #cecece;
+}
+
+#layers-container .item-content {
+    align-items: center;
+    border-top: 1px solid black;
+    display: flex;
+    padding: 0.2em 0;
+}

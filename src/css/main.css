@@ -1,9 +1,13 @@
 @import './common.css';
 @import './canvas.css';
+@import './tree-view.css';
+@import './tools.css';
 
 :root {
     --background-color: #323232;
     --color: white;
+    --vh: 1vh;
+    --vw: 1vw;
 }
 
 body {
@@ -13,10 +17,10 @@ body {
     color: var(--color);
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: calc(var(--vh) * 100);
     justify-content: stretch;
     margin: 0;
-    width: 100vw;
+    width: calc(var(--vw) * 100);
 }
 
 body * {
@@ -53,6 +57,6 @@ label > span:first-child {
 #main {
     display: grid;
     flex-grow: 1;
-    grid-template-columns: fit-content(25%) 1fr fit-content(25%);
-    grid-template-rows: repeat(2, 1fr);
+    /*grid-template-columns: 25% 1fr 25%;*/
+    /*grid-template-rows: repeat(2, 1fr);*/
 }

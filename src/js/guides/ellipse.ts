@@ -1,6 +1,7 @@
 import {ElementWrapper, poolProvider} from './pool';
-import {SVG_NS} from '../svg';
+import {SVG_NS} from '../mini-f';
 import {Coords} from '../geometry';
+import {fluent} from '../utils';
 
 export interface Ellipse {
     center(point: Coords): Ellipse;
@@ -11,19 +12,16 @@ export interface Ellipse {
 }
 
 const prototype = {
-    center(point: Coords) {
+    center: fluent(function (point: Coords) {
         this.el.setAttribute('cx', String(point.x));
         this.el.setAttribute('cy', String(point.y));
-        return this;
-    },
-    rx(length: number) {
-        this.el.setAttribute('rx', length);
-        return this;
-    },
-    ry(length: number) {
-        this.el.setAttribute('ry', length);
-        return this;
-    }
+    }),
+    rx: fluent(function (length: number) {
+        this.el.setAttribute('rx', String(length));
+    }),
+    ry: fluent(function (length: number) {
+        this.el.setAttribute('ry', String(length));
+    })
 };
 
 export type DomEllipse = Ellipse & ElementWrapper;

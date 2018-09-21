@@ -1,13 +1,18 @@
-import {magnifier} from './magnifier';
-import {hand} from './hand';
+import {magnifierTool} from './magnifier';
+import {handTool} from './hand';
 import {rectangleTool} from './rectangle';
 import {ellipseTool} from './ellipse';
 import {events} from '../canvas';
 import {Coords} from '../geometry';
-import {ClickTool, DragTool, Tool} from "./interfaces";
+import {ClickTool, DragTool, Tool, ToolType} from './interfaces';
+import {fluent} from '../utils';
+import {Emitter, emitter} from '../events';
+import {ToolBoxEvent} from './events';
 
-interface ToolBox {
+export interface ToolBox extends Emitter {
     selectTool(tool): ToolBox;
+
+    addTool(tool): ToolBox
 }
 
 function isClickTool(arg: any): arg is ClickTool {
@@ -19,13 +24,26 @@ function isDragTool(arg: any): arg is DragTool {
 }
 
 export const toolBox = ({canvas, canvasGuide, document}): ToolBox => {
-    const tools: Tool[] = [
-        magnifier({canvas}),
-        hand({canvas}),
-        rectangleTool({canvasGuide, canvas, document}),
-        ellipseTool({canvasGuide, canvas, document})
-    ];
-    let selectedTool = tools[3];
+    const tools: Tool[] = [];
+    let selectedTool: Tool = null;
+
+    const instance = Object.assign(emitter(), {
+        selectTool: fluent(function (tool: ToolType) {
+            selectedTool = tools.find(t => t.toolType === tool);
+            this.dispatch(ToolBoxEvent.SELECT, selectedTool);
+        }),
+        addTool: fluent(function (tool: Tool) {
+            tools.push(tool);
+            this.dispatch(ToolBoxEvent.ADD, tool);
+        })
+    });
+
+    instance
+        .addTool(magnifierTool({canvas}))
+        .addTool(handTool({canvas}))
+        .addTool(rectangleTool({canvasGuide, document}))
+        .addTool(ellipseTool({canvasGuide, canvas, document}));
+
 
     canvas.on(events.MOUSE_CLICK, (p: Coords, event: MouseEvent) => {
         const {altKey} = event;
@@ -56,10 +74,7 @@ export const toolBox = ({canvas, canvasGuide, document}): ToolBox => {
         }
     });
 
-    return {
-        selectTool(tool) {
-            selectedTool = tools.find(t => t === tool);
-            return this;
-        }
-    };
+    instance.selectTool(ToolType.ELLIPSE);
+
+    return instance;
 };

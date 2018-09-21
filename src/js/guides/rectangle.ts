@@ -1,5 +1,6 @@
 import {ElementWrapper, poolProvider} from './pool';
-import {SVG_NS} from '../svg';
+import {SVG_NS} from '../mini-f';
+import {fluent} from '../utils';
 
 export interface Rectangle {
     width(width: number): Rectangle;
@@ -12,22 +13,18 @@ export interface Rectangle {
 }
 
 const prototype = {
-    width(width: number) {
+    width: fluent(function (width: number) {
         this.el.setAttribute('width', String(width));
-        return this;
-    },
-    height(height: number) {
+    }),
+    height: fluent(function (height: number) {
         this.el.setAttribute('height', String(height));
-        return this;
-    },
-    x(width: number) {
+    }),
+    x: fluent(function (width: number) {
         this.el.setAttribute('x', String(width));
-        return this;
-    },
-    y(width: number) {
+    }),
+    y: fluent(function (width: number) {
         this.el.setAttribute('y', String(width));
-        return this;
-    }
+    })
 };
 
 export type DomRectangle = Rectangle & ElementWrapper

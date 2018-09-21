@@ -3,6 +3,8 @@ export interface Coords {
     y: number
 }
 
+export const trunc = (number: number) => Math.trunc(number * 10) / 10;
+
 export interface Vector extends Coords {
     clone(): Vector;
 
@@ -57,5 +59,5 @@ export function vector(x, y) {
         Array.isArray(x) ? [xCoord, yCoord] = x : {x: xCoord, y: yCoord} = x;
     }
 
-    return Object.create(proto, {x: {value: xCoord}, y: {value: yCoord}});
+    return Object.create(proto, {x: {value: trunc(xCoord)}, y: {value: trunc(yCoord)}});
 }

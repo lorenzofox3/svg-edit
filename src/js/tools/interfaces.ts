@@ -1,6 +1,17 @@
 import {Coords} from '../geometry';
 
+export const toolType = Symbol('property to get the tool type');
+
+export const enum ToolType {
+    MAGNIFIER = 'magnifier',
+    HAND = 'hand',
+    ELLIPSE = 'ellipse',
+    RECTANGLE = 'rectangle'
+}
+
+// todo use symbole instead
 export interface Tool {
+    toolType: ToolType;
 }
 
 export interface ClickTool extends Tool {
@@ -16,3 +27,5 @@ export interface DragTool extends Tool {
 
     actionDragEnd(point: Coords, event: DragEvent);
 }
+
+

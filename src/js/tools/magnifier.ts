@@ -1,8 +1,14 @@
-import {ClickTool} from './interfaces';
+import {ClickTool, ToolType} from './interfaces';
 import {Coords} from '../geometry';
+import {Canvas} from '../canvas';
 
-export const magnifier = ({canvas}): ClickTool => {
+type MagnifierToolDependencies = {
+    canvas: Canvas
+}
+
+export const magnifierTool = ({canvas}: MagnifierToolDependencies): ClickTool => {
     return {
+        toolType:ToolType.MAGNIFIER,
         actionClick(point: Coords, event: MouseEvent) {
             canvas.zoomIn(point);
         },

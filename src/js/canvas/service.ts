@@ -1,7 +1,6 @@
 import {emitter, Emitter} from '../events';
 import {events} from './events';
 import {Coords, Vector, vector} from '../geometry';
-import {render} from '../svg';
 
 export interface ViewPort {
     width: number;
@@ -9,6 +8,8 @@ export interface ViewPort {
 }
 
 export interface Canvas {
+    pixelByUnit: number;
+
     zoom(ratio: number, zoomCenter?: Coords): Canvas;
 
     zoomIn(center ?: Coords): Canvas;
@@ -18,32 +19,29 @@ export interface Canvas {
     fitContent(): Canvas;
 
     pane(dir: Vector): Canvas;
-
-    render(): void;
 }
 
 const padding = 20;
 const zoomRatios = [0.2, 0.4, 0.5, 0.8, 1, 1.2, 1.5, 2, 4, 8];
 const svgBorder = 1;
 
-export const canvas = ({root, el}): Canvas & Emitter => {
+export const canvas = ({document: root, el}): Canvas & Emitter => {
     const physicalCanvas = el.querySelector('#canvas');
     const svg = el.querySelector('#document');
-    const renderLayer = el.querySelector('#render-layer');
 
     const viewBox = {
         xmin: 0,
         ymin: 0,
-        width: root.width(),
-        height: root.height()
+        width: root.width,
+        height: root.height
     };
 
     let mouseDown = false;
     let dragging = false;
     let pixelByUnit = 1;
     let center = {
-        x: root.width() / 2,
-        y: root.height() / 2
+        x: root.width / 2,
+        y: root.height / 2
     };
 
     const getPhysicalLength = (): ViewPort => {
@@ -75,8 +73,8 @@ export const canvas = ({root, el}): Canvas & Emitter => {
             viewBox.ymin = cornerTopLeft.y;
 
             requestAnimationFrame(() => {
-                svg.style.setProperty('width', root.width() * pixelByUnit + 'px');
-                svg.style.setProperty('height', root.height() * pixelByUnit + 'px');
+                svg.style.setProperty('width', root.width * pixelByUnit + 'px');
+                svg.style.setProperty('height', root.height * pixelByUnit + 'px');
                 physicalCanvas.style.setProperty('width', viewBox.width * pixelByUnit + 'px');
                 physicalCanvas.style.setProperty('height', viewBox.height * pixelByUnit + 'px');
                 svg.style.setProperty('transform', `translateX(${-1 * viewBox.xmin * pixelByUnit}px) translateY(${ -1 * viewBox.ymin * pixelByUnit}px)`);
@@ -104,16 +102,15 @@ export const canvas = ({root, el}): Canvas & Emitter => {
 
         fitContent() {
             const {width: physicalWidth, height: physicalHeight} = getPhysicalLength();
-            const zoomRatio = Math.min((physicalWidth - svgBorder * 2) / root.width(), (physicalHeight - svgBorder * 2) / root.height());
-            const canvasCenter = {x: root.width() / 2, y: root.height() / 2};
+            const zoomRatio = Math.min((physicalWidth - svgBorder * 2) / root.width, (physicalHeight - svgBorder * 2) / root.height);
+            const canvasCenter = {x: root.width / 2, y: root.height / 2};
             return this.zoom(zoomRatio, canvasCenter);
-        },
+        }
+    });
 
-        render() {
-            const range = document.createRange();
-            range.selectNodeContents(renderLayer);
-            range.deleteContents();
-            render(renderLayer, root.children[0]); // todo ugly
+    Object.defineProperty(instance, 'pixelByUnit', {
+        get() {
+            return pixelByUnit;
         }
     });
 
@@ -140,5 +137,6 @@ export const canvas = ({root, el}): Canvas & Emitter => {
         }
     });
 
+    // @ts-ignore
     return instance;
 };

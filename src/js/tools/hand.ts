@@ -1,12 +1,18 @@
-import {DragTool} from './interfaces';
+import {DragTool, ToolType} from './interfaces';
 import {Coords, vector, Vector} from '../geometry';
+import {Canvas} from '../canvas';
 
-export const hand = ({canvas}): DragTool => {
+type HandToolDependencies = {
+    canvas: Canvas;
+}
+
+export const handTool = ({canvas}: HandToolDependencies): DragTool => {
 
     let lastPosition: Vector | null = null;
     let origin: Vector | null = null;
 
     return {
+        toolType: ToolType.HAND,
         actionDragStart(point: Coords, event) {
             origin = lastPosition = vector(point);
         },

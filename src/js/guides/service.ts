@@ -1,6 +1,7 @@
 import {GuidePool, Releasable} from './pool';
 import {rectanglePoolFactory, DomRectangle} from './rectangle';
 import {DomEllipse, ellipsePoolFactory} from './ellipse';
+import {events} from '../canvas';
 
 export type RectangleGuide = Releasable & DomRectangle;
 export type EllipseGuide = Releasable & DomEllipse;
@@ -11,10 +12,17 @@ export interface GuideLayer {
     getEllipseGuide(centerX: number, centerY: number): EllipseGuide;
 }
 
-export const guideLayer = ({el}): GuideLayer => {
-    const layer = el.querySelector('#guide-layer');
-    const rectanglePool: GuidePool<RectangleGuide> = rectanglePoolFactory(layer);
-    const ellipsePool: GuidePool<EllipseGuide> = ellipsePoolFactory(layer);
+export const guideLayer = ({el, canvas, document: root}): GuideLayer => {
+    const rectanglePool: GuidePool<RectangleGuide> = rectanglePoolFactory(el);
+    const ellipsePool: GuidePool<EllipseGuide> = ellipsePoolFactory(el);
+
+    canvas.on(events.VIEW_BOX_CHANGE, viewBox => {
+        requestAnimationFrame(() => {
+            el.style.setProperty('width', root.width * canvas.pixelByUnit + 'px');
+            el.style.setProperty('height', root.height * canvas.pixelByUnit + 'px');
+            el.style.setProperty('transform', `translateX(${-1 * viewBox.xmin * canvas.pixelByUnit}px) translateY(${ -1 * viewBox.ymin * canvas.pixelByUnit}px)`);
+        });
+    });
 
     return {
         getRectangleGuide(topLeftX: number, topLeftY: number) {
