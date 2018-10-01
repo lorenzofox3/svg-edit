@@ -1,3 +1,3 @@
 export * from './events';
-export * from './service';
-export * from './components';
+export * from './canvas.service';
+export * from './canvas.component';

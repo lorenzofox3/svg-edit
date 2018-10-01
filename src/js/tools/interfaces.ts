@@ -6,12 +6,13 @@ export const enum ToolType {
     MAGNIFIER = 'magnifier',
     HAND = 'hand',
     ELLIPSE = 'ellipse',
-    RECTANGLE = 'rectangle'
+    RECTANGLE = 'rectangle',
+    SELECTION = 'selection',
+    POLYGON = 'polygon'
 }
 
-// todo use symbole instead
 export interface Tool {
-    toolType: ToolType;
+    readonly toolType: ToolType;
 }
 
 export interface ClickTool extends Tool {
@@ -26,6 +27,16 @@ export interface DragTool extends Tool {
     actionDrag(point: Coords, event: DragEvent);
 
     actionDragEnd(point: Coords, event: DragEvent);
+}
+
+export interface StatefullTool extends Tool {
+    cancelAction();
+
+    endAction()
+}
+
+export interface MoveTool extends Tool {
+    actionMove(point: Coords, event: MouseEvent);
 }
 
 

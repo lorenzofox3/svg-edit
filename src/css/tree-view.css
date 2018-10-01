@@ -44,8 +44,35 @@
 }
 
 #layers-container .item-content {
-    align-items: center;
+    align-items: stretch;
     border-top: 1px solid black;
     display: flex;
     padding: 0.2em 0;
+}
+
+#layers-container .item-label {
+    align-items: center;
+    display: flex;
+    flex-grow: 1;
+}
+
+#layers-container .item-content.drop-whole {
+    background: orange;
+}
+
+#layers-container .item-content.drop-top {
+    border-top: 2px solid orange;
+}
+
+#layers-container .item-content.drop-bottom {
+    border-bottom: 2px solid orange;
+}
+
+.layer-active > .item-content {
+    background: #4e728c;
+}
+
+.control-bar {
+    display: flex;
+    align-items: stretch;
 }

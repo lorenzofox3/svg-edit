@@ -27,7 +27,7 @@ const prototype = {
     })
 };
 
-export type DomRectangle = Rectangle & ElementWrapper
+export type DomRectangle = Rectangle & ElementWrapper;
 
 const rectangle = (): DomRectangle => {
     const el = document.createElementNS(SVG_NS, 'rect');

@@ -17,6 +17,7 @@ body {
     color: var(--color);
     display: flex;
     flex-direction: column;
+    font-size: 90%;
     height: calc(var(--vh) * 100);
     justify-content: stretch;
     margin: 0;

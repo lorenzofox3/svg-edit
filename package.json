@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "flaco": "^2.0.0-0",
-    "hyperapp": "^1.2.8"
+    "hyperapp": "^1.2.8",
+    "smart-table-operators": "^2.0.4"
   }
 }

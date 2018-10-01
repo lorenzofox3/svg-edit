@@ -1,14 +1,24 @@
 import {emitter, Emitter} from '../events';
 import {events} from './events';
 import {Coords, Vector, vector} from '../geometry';
+import {fluent} from '../utils';
 
 export interface ViewPort {
     width: number;
     height: number;
 }
 
+export interface ViewBox {
+    xmin: number,
+    ymin: number,
+    width: number,
+    height: number,
+}
+
 export interface Canvas {
     pixelByUnit: number;
+
+    matchViewBox(viewbox: ViewBox): Canvas;
 
     zoom(ratio: number, zoomCenter?: Coords): Canvas;
 
@@ -22,14 +32,14 @@ export interface Canvas {
 }
 
 const padding = 20;
-const zoomRatios = [0.2, 0.4, 0.5, 0.8, 1, 1.2, 1.5, 2, 4, 8];
+const zoomRatios = [0.2, 0.4, 0.5, 0.8, 1, 1.2, 1.5, 2, 4, 8, 10];
 const svgBorder = 1;
 
-export const canvas = ({document: root, el}): Canvas & Emitter => {
+export const CanvasService = ({document: root, el}): Canvas & Emitter => {
     const physicalCanvas = el.querySelector('#canvas');
     const svg = el.querySelector('#document');
 
-    const viewBox = {
+    const viewBox: ViewBox = {
         xmin: 0,
         ymin: 0,
         width: root.width,
@@ -57,7 +67,7 @@ export const canvas = ({document: root, el}): Canvas & Emitter => {
             const {x, y} = physicalCanvas.getBoundingClientRect();
             return vector(viewBox.xmin, viewBox.ymin).add(vector((physicalX - x) / pixelByUnit, (physicalY - y) / pixelByUnit));
         },
-        zoom(ratio: number, zoomCenter?: Coords) {
+        zoom: fluent(function (ratio: number, zoomCenter?: Coords) {
             const {width: physicalWidth, height: physicalHeight} = getPhysicalLength();
             center = zoomCenter !== undefined ? zoomCenter : center;
 
@@ -72,17 +82,20 @@ export const canvas = ({document: root, el}): Canvas & Emitter => {
             viewBox.xmin = cornerTopLeft.x;
             viewBox.ymin = cornerTopLeft.y;
 
-            requestAnimationFrame(() => {
-                svg.style.setProperty('width', root.width * pixelByUnit + 'px');
-                svg.style.setProperty('height', root.height * pixelByUnit + 'px');
-                physicalCanvas.style.setProperty('width', viewBox.width * pixelByUnit + 'px');
-                physicalCanvas.style.setProperty('height', viewBox.height * pixelByUnit + 'px');
-                svg.style.setProperty('transform', `translateX(${-1 * viewBox.xmin * pixelByUnit}px) translateY(${ -1 * viewBox.ymin * pixelByUnit}px)`);
-            });
+            svg.style.setProperty('width', root.width * pixelByUnit + 'px');
+            svg.style.setProperty('height', root.height * pixelByUnit + 'px');
+            physicalCanvas.style.setProperty('width', viewBox.width * pixelByUnit + 'px');
+            physicalCanvas.style.setProperty('height', viewBox.height * pixelByUnit + 'px');
+            svg.style.setProperty('transform', `translateX(${-1 * viewBox.xmin * pixelByUnit}px) translateY(${ -1 * viewBox.ymin * pixelByUnit}px)`);
 
             this.dispatch(events.VIEW_BOX_CHANGE, Object.assign({}, viewBox));
+        }),
 
-            return this;
+        matchViewBox(viewbox: ViewBox) {
+            const {width: physicalWidth, height: physicalHeight} = getPhysicalLength();
+            const ratio = Math.min(physicalHeight / viewbox.height, physicalWidth / viewbox.width);
+            const center = {x: viewbox.xmin + viewbox.width / 2, y: viewbox.ymin + viewbox.height / 2};
+            return this.zoom(ratio, center);
         },
 
         zoomIn(zoomCenter = center) {
@@ -114,7 +127,10 @@ export const canvas = ({document: root, el}): Canvas & Emitter => {
         }
     });
 
+    let origin = null;
+
     physicalCanvas.addEventListener('mousedown', ev => {
+        origin = instance.getCoordinates(ev.clientX, ev.clientY);
         mouseDown = true;
     });
 
@@ -124,13 +140,14 @@ export const canvas = ({document: root, el}): Canvas & Emitter => {
         instance.dispatch(event, coords, event);
         mouseDown = false;
         dragging = false;
+        origin = null;
     });
 
     physicalCanvas.addEventListener('mousemove', ev => {
         const coords = instance.getCoordinates(ev.clientX, ev.clientY);
         if (mouseDown) {
             const event = dragging ? events.MOUSE_DRAG : events.MOUSE_DRAG_START;
-            instance.dispatch(event, coords, ev);
+            instance.dispatch(event, dragging ? coords : origin, ev);
             dragging = true;
         } else {
             instance.dispatch(events.MOUSE_MOVE, coords, ev);

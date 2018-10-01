@@ -21,7 +21,9 @@ export const handTool = ({canvas}: HandToolDependencies): DragTool => {
                 const newPosition = vector(point);
                 const vect = lastPosition.substract(newPosition);
                 lastPosition = newPosition;
-                canvas.pane(vect.multiply(0.7)); // Avoid acceleration due to the movement of the origin : todo correct equations when reference changes
+                requestAnimationFrame(() => {
+                    canvas.pane(vect.multiply(0.7)); // Avoid acceleration due to the movement of the origin : todo correct equations when reference changes
+                });
             }
         },
         actionDragEnd(point: Coords, event) {

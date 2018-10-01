@@ -1,12 +1,12 @@
-import {canvas as canvasFactory, renderingLayer} from '../canvas';
+import {CanvasService as canvasFactory, CanvasComponent} from '../canvas';
 import {toolBarComponent, toolBox as toolBoxFactory} from '../tools';
-import {ContainerNode, root as svg, TagName} from '../svg-document';
+import {ParentNode, RootService as svg, NodeType} from '../svg-document';
 import {guideLayer as guideLayerFactory} from '../guides/service';
 import {SVG_NS} from '../mini-f';
 import {TreeViewComponent} from '../tree-view';
 
-const width = 640;
-const height = 640;
+const width = 600;
+const height = 600;
 
 const body = document.querySelector('body');
 const canvasContainer = document.getElementById('canvas-container');
@@ -30,14 +30,14 @@ const toolBoxService = toolBoxFactory({canvas, document: root, canvasGuide});
 // components
 const toolbar = toolBarComponent({el: document.getElementById('toolbar'), toolBox: toolBoxService})
     .render();
-const svgLayer = renderingLayer({el: rootNode, document: root});
+const svgLayer = CanvasComponent({el: rootNode, document: root});
 const treeView = TreeViewComponent({el: document.querySelector('#document-tree-view'), document: root})
     .render();
 
 
 // trackerComponent({el: document.querySelector('#document-tree-view > ul'), canvas});
 
-root.addLayer({id: 'render-layer'});
+root.createLayerNode({id: 'render-layer'});
 
 body.addEventListener('keypress', ev => {
     const {metaKey, key} = ev;
@@ -58,8 +58,8 @@ window.addEventListener('load', ev => {
     body.style.setProperty('--vh', `${window.innerHeight / 100}px`);
     body.style.setProperty('--vw', `${window.innerWidth / 100}px`);
 
-    const group = <ContainerNode>root.append(TagName.GROUP, {});
-    group.appendChild(root.createNode(TagName.RECTANGLE, {x: 0, y: 0, width: 100, height: 100}));
+    const group = <ParentNode>root.append(NodeType.GROUP, {});
+    group.appendChild(root.createNode(NodeType.RECTANGLE, {x: 0, y: 0, width: 100, height: 100}));
 
     requestAnimationFrame(() => canvas.zoom(0.7));
 });

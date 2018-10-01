@@ -1,3 +1,2 @@
-export * from './root';
+export * from './root.service';
 export * from './nodes';
-export * from './components';

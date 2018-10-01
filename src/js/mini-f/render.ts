@@ -112,8 +112,8 @@ export const component = (template: Function) => (el: Node, initialState = {}) =
     vnode: null,
     state: initialState,
     render(state?: Object) {
-        this.state = state || this.state;
-        const vnode = template(this.state, (newState = {}) => this.render(Object.assign({}, this.state, newState)));
+        Object.assign(this.state, state || {});
+        const vnode = template(this.state, (newState = {}) => this.render(newState));
         const {batch, vnode: newVNode} = render(this.vnode, vnode, el);
         this.vnode = newVNode;
         nextTick(() => {

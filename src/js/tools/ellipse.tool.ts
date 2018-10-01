@@ -1,9 +1,10 @@
 import {DragTool} from './interfaces';
 import {Coords, Vector, vector} from '../geometry';
 import {EllipseGuide, GuideLayer} from '../guides';
-import {Root, TagName} from '../svg-document';
+import {Root, NodeType} from '../svg-document';
 import {ToolType} from './interfaces';
 import {Canvas} from '../canvas';
+import {compose} from 'smart-table-operators';
 
 type EllipseToolDependencies = {
     canvasGuide: GuideLayer;
@@ -16,6 +17,9 @@ export const ellipseTool = ({canvasGuide, canvas, document}: EllipseToolDependen
     let origin: Vector | null = null;
     let guide: EllipseGuide | null = null;
 
+    const {createEllipseNode, append} = document;
+    const appendEllipse = compose(createEllipseNode.bind(document), append.bind(document));
+
     return {
         toolType: ToolType.ELLIPSE,
 
@@ -25,18 +29,20 @@ export const ellipseTool = ({canvasGuide, canvas, document}: EllipseToolDependen
         },
         actionDrag(point: Coords) {
             const radius = vector(point).substract(origin);
-            guide.rx(radius.x);
-            guide.ry(radius.y);
+            requestAnimationFrame(() => {
+                guide.rx(radius.x);
+                guide.ry(radius.y);
+            });
         },
         actionDragEnd(point: Coords) {
             const vec = vector(point).substract(origin);
-            document.append(TagName.ELLIPSE, {
+            guide.release();
+            appendEllipse({
                 cx: origin.x,
                 cy: origin.y,
                 rx: vec.x,
                 ry: vec.y
             });
-            guide.release();
             origin = null;
         }
     };

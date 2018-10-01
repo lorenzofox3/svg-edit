@@ -2,7 +2,8 @@
     background: var(--background-color);
     display: inline-block;
     position: absolute;
-    right: 0;
+    right: 5em;
+    top: 5em;
     z-index: 999;
     width: 200px;
 }

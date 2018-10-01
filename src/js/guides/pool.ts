@@ -1,5 +1,5 @@
 export interface ElementWrapper {
-    el: any
+    readonly el: any
 }
 
 export interface Releasable {

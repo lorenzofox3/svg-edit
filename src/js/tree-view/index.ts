@@ -1,1 +1,1 @@
-export * from './components';
+export * from './tree-view.components';
