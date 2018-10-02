@@ -2,6 +2,7 @@ import {ClickTool, DragTool, ToolType} from './interfaces';
 import {Coords, vector, Vector} from '../geometry';
 import {Canvas} from '../canvas';
 import {GuideLayer, RectangleGuide} from '../guides';
+import {findMatchingRectangle} from './rectangle.tool';
 
 type MagnifierToolDependencies = {
     canvas: Canvas,
@@ -26,18 +27,21 @@ export const magnifierTool = ({canvas, canvasGuide}: MagnifierToolDependencies):
             origin = vector(point);
         },
         actionDrag(point: Coords) {
-            const translation = vector(point).substract(origin);
+            const {x, y, width, height} = findMatchingRectangle(origin, point);
             requestAnimationFrame(() => {
-                guide.width(translation.x);
-                guide.height(translation.y);
+                guide.x(x);
+                guide.y(y);
+                guide.width(width);
+                guide.height(height);
             });
         },
         actionDragEnd(point: Coords) {
+            const {x: xmin, y: ymin, width, height} = findMatchingRectangle(origin, point);
             const viewBox = {
-                xmin: origin.x,
-                ymin: origin.y,
-                width: point.x - origin.x,
-                height: point.y - origin.y
+                xmin,
+                ymin,
+                width,
+                height
             };
             guide.release();
             canvas.matchViewBox(viewBox);

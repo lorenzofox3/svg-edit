@@ -8,7 +8,8 @@ export const enum ToolType {
     ELLIPSE = 'ellipse',
     RECTANGLE = 'rectangle',
     SELECTION = 'selection',
-    POLYGON = 'polygon'
+    POLYGON = 'polygon',
+    LINE = 'line'
 }
 
 export interface Tool {
@@ -29,10 +30,10 @@ export interface DragTool extends Tool {
     actionDragEnd(point: Coords, event: DragEvent);
 }
 
-export interface StatefullTool extends Tool {
+export interface StatefulTool extends Tool {
     cancelAction();
 
-    endAction()
+    endAction();
 }
 
 export interface MoveTool extends Tool {

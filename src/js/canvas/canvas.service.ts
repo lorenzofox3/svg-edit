@@ -137,7 +137,7 @@ export const CanvasService = ({document: root, el}): Canvas & Emitter => {
     physicalCanvas.addEventListener('mouseup', ev => {
         const coords = instance.getCoordinates(ev.clientX, ev.clientY);
         const event = dragging ? events.MOUSE_DRAG_END : events.MOUSE_CLICK;
-        instance.dispatch(event, coords, event);
+        instance.dispatch(event, coords, ev);
         mouseDown = false;
         dragging = false;
         origin = null;
@@ -152,6 +152,10 @@ export const CanvasService = ({document: root, el}): Canvas & Emitter => {
         } else {
             instance.dispatch(events.MOUSE_MOVE, coords, ev);
         }
+    });
+
+    physicalCanvas.addEventListener('keydown', ev => {
+        instance.dispatch(events.KEY_DOWN, ev);
     });
 
     // @ts-ignore

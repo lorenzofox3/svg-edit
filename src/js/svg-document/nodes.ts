@@ -7,7 +7,8 @@ export const enum NodeType {
     GROUP = 'group',
     RECTANGLE = 'rectangle',
     LAYER = 'layer',
-    POLYGON = 'polygon'
+    POLYGON = 'polygon',
+    LINE = 'line'
 }
 
 export const typeTagMap = {
@@ -16,7 +17,8 @@ export const typeTagMap = {
     [NodeType.GROUP]: 'g',
     [NodeType.RECTANGLE]: 'rect',
     [NodeType.LAYER]: 'g',
-    [NodeType.POLYGON]:'polygon'
+    [NodeType.POLYGON]: 'polygon',
+    [NodeType.LINE]: 'line'
 };
 
 export const enum NodeEvent {

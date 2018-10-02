@@ -16,7 +16,11 @@ export interface Vector extends Coords {
 
     norm(): number;
 
+    dot(vector: Vector): number;
+
     distance(vect: Vector): number;
+
+    determinant(vect: Vector): number;
 }
 
 const proto = {
@@ -33,6 +37,11 @@ const proto = {
             y: this.y
         }));
     },
+
+    dot(vector: Vector) {
+        return this.x * vector.x + this.y * vector.y;
+    },
+
     substract(vect: Vector) {
         return this.add(vect.multiply(-1));
     },
@@ -44,6 +53,9 @@ const proto = {
     },
     distance(vect: Vector) {
         return vect.add(this.multiply(-1)).norm();
+    },
+    determinant(vect: Vector) {
+        return this.x * vect.y - this.y * vect.x;
     }
 };
 

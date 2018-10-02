@@ -22,10 +22,10 @@ export type DOMPoint = Point & ElementWrapper;
 const point = (): DOMPoint => {
     const el = document.createElementNS(SVG_NS, 'circle');
     el.setAttribute('vector-effect', 'non-scaling-stroke');
-    el.setAttribute('stroke-width', '1px');
+    el.setAttribute('stroke-width', '3px');
     el.setAttribute('stroke', 'blue');
     el.setAttribute('fill', 'blue');
-    el.setAttribute('r', '5px');
+    el.setAttribute('r', '1px');
 
     return Object.create(prototype, {
         el: {value: el}

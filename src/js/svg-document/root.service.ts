@@ -16,6 +16,17 @@ type EllipseOptions = {
     ry?: number;
 }
 
+type PolygonOptions = {
+    points?: Coords[];
+}
+
+type LineOptions = {
+    x1: number;
+    x2: number;
+    y1: number;
+    y2: number;
+}
+
 export interface Root extends Emitter {
     width: number;
     height: number;
@@ -29,6 +40,10 @@ export interface Root extends Emitter {
     createRectangleNode(options: RectangleOptions): Node;
 
     createEllipseNode(options: EllipseOptions): Node;
+
+    createPolygonNode(options: PolygonOptions): Node;
+
+    createLineNode(options: LineOptions): Node;
 
     append<T extends Node>(type: NodeType, attributes: Object): T;
 
@@ -80,9 +95,13 @@ export const RootService = ({width = 100, height = 100} = {
         createEllipseNode(options: EllipseOptions) {
             return this.createNode(NodeType.ELLIPSE, options);
         },
-        createPolygonNode(vertices: Coords[], options){
-            //todo
-            return this.create(NodeType.POLYGON, options);
+        createPolygonNode(options: PolygonOptions) {
+            const attributes: any = {...options};
+            attributes.points = options.points.map(({x, y}) => `${x},${y}`).join(' ');
+            return this.createNode(NodeType.POLYGON, attributes);
+        },
+        createLineNode(options: LineOptions) {
+            return this.createNode(NodeType.LINE, options);
         },
         activateLayer(node: Layer) {
             rootNode.children.map(ch => ch === node ? (<Layer>ch).activate() : (<Layer>ch).deactivate());

@@ -12,6 +12,7 @@
 
 #canvas {
     background: white;
+    cursor: crosshair;
     overflow: hidden;
     position: relative;
 }
